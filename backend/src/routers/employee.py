@@ -10,8 +10,8 @@ from src.controllers.employee import (create_employee as create_employee_control
 router = APIRouter(prefix="/employee", tags=["employee"])
 from uuid import UUID
 
-# Endpoint to create a new employee (POST /employee/create)
-@router.post("/create")
+# Endpoint to create a new employee (POST /employee)
+@router.post("")
 async def create_employee(data : EmployeeBase, session: AsyncSession = Depends(get_db_session)):
     """Create a new employee."""    
     return await create_employee_controller(data, session)

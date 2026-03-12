@@ -19,7 +19,7 @@ async def create_employee(data : EmployeeBase, session: AsyncSession):
 
         return {"message": "Employee created successfully.", "employee": new_employee}
     except HTTPException as e:
-        raise e
+        raise 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong while creating the employee.")
     
@@ -40,7 +40,7 @@ async def get_employee(employee_id: UUID, session: AsyncSession):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Employee not found.")
         return {"employee": employee}
     except HTTPException as e:
-        raise e
+        raise 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong while fetching the employee details.")
     
@@ -55,6 +55,6 @@ async def delete_employee(employee_id: UUID, session: AsyncSession):
         await session.commit()
         return {"message": "Employee deleted successfully."}
     except HTTPException as e:
-        raise e
+        raise 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong while deleting the employee.")
