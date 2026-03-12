@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.routers.employee import router as employee_router
 from src.routers.leave_request import app as leave_request_router
+from src.routers.manager import app as manager_router
 
 from src.database.connection import test_connection
 
@@ -38,3 +39,4 @@ async def root():
 
 app.include_router(employee_router)
 app.include_router(leave_request_router)
+app.include_router(manager_router)
