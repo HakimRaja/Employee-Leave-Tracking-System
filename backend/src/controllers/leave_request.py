@@ -78,7 +78,7 @@ async def list_leave_requests(session: AsyncSession):
                                            LeaveRequest.start_date,LeaveRequest.end_date,
                                            LeaveRequest.leave_type,LeaveRequest.notes,
                                            LeaveRequest.status).join(Employee, LeaveRequest.employee_id == Employee.id)
-                                           .where(LeaveRequest.deleted_at.is_(None)))
+                                           .where(LeaveRequest.deleted_at.is_(None), Employee.deleted_at.is_(None)))
         leave_requests = result.mappings().all()
         return {"leave_requests": leave_requests}
     except Exception as e:
