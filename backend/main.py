@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.routers.employee import router as employee_router
 
 from src.database.connection import test_connection
 
@@ -33,3 +34,5 @@ async def startup_event():
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Employee Leave Tracking System API!"}
+
+app.include_router(employee_router)
