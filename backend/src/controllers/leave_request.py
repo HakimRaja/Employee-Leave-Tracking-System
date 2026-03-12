@@ -6,6 +6,7 @@ from src.schemas.leave_request import LeaveRequestBase
 from sqlmodel import select,func
 from datetime import datetime,timedelta
 
+# Create a new leave request
 async def create_leave_request(leave_data : LeaveRequestBase,session: AsyncSession):
     try:
         # Check if the employee exists and is not deleted
@@ -70,6 +71,7 @@ async def create_leave_request(leave_data : LeaveRequestBase,session: AsyncSessi
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while creating the leave request.{e}")
 
+# List leave requests with employee details
 async def list_leave_requests(session: AsyncSession):
     try:
         result = await session.exec(select(LeaveRequest.id,LeaveRequest.employee_id,Employee.name,Employee.email,Employee.department,Employee.annual_leave_balance,
