@@ -35,7 +35,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_employees_deleted_at'), 'employees', ['deleted_at'], unique=False)
     op.create_index(op.f('ix_employees_department'), 'employees', ['department'], unique=False)
-    op.create_index(op.f('ix_employees_email'), 'employees', ['email'], unique=True)
+    op.create_index(op.f('ix_employees_email'), 'employees', ['email'], unique=False)
     op.create_index(op.f('ix_employees_id'), 'employees', ['id'], unique=False)
     op.create_index(op.f('ix_employees_name'), 'employees', ['name'], unique=False)
     # ### end Alembic commands ###
