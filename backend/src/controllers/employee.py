@@ -25,7 +25,10 @@ async def create_employee(data : EmployeeBase, session: AsyncSession):
     
 async def list_employees(session: AsyncSession):
     try:
-        result = await session.exec(select(Employee.id,Employee.name,Employee.email).where(Employee.deleted_at.is_(None)))
+        result = await session.exec(select(Employee.id,Employee.name,Employee.email
+                                           ).where(Employee.deleted_at.is_(None))
+                                           ).order_by(Employee.created_at.desc())
+        
         employees = result.mappings().all()
         # print(f"Retrieved ({employees} )employees from the database.")
         return {"employees": employees}
