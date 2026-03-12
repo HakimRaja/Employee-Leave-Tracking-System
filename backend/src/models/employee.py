@@ -9,7 +9,7 @@ class Employee(SQLModel, table=True):
 
     id : uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
     name : str = Field(..., index=True)
-    email : EmailStr = Field(..., unique=True, index=True)
+    email : EmailStr = Field(..., unique=False, index=True)
     department : str = Field(..., index=True)
     annual_leave_balance : int = Field(default=20)
 
