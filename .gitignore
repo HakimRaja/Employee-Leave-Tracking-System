@@ -28,3 +28,12 @@ frontend/*.sw?
 
 
 #------- Backend -------
+backend/venv
+backend/.env
+
+backend/venv
+
+# Ignore all python cache folders
+**/__pycache__/
+*.py[cod]
+*$py.class
