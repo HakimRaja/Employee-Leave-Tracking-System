@@ -6,7 +6,7 @@ export default function Sidebar() {
     return (
         <>
         {/* Sidebar */}
-        <div className=" hidden w-64 h-screen bg-gray-900 text-white md:flex flex-col p-5">
+        <div className=" hidden w-64 min-h-screen bg-gray-900 text-white md:flex flex-col p-5">
             <h1 className="text-2xl font-bold gap-4 m-2 pb-3"><CalendarDays className="inline-block"/> Leave Tracker</h1>
             <nav className="flex flex-col gap-4">
                 <Link 
