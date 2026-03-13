@@ -24,7 +24,7 @@ export default function Sidebar() {
             </nav>
         </div>
         {/* Mobile Sidebar */}
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border flex justify-around py-2 bg-gray-900 text-white">
+        <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-card border-t border-border flex justify-around py-2 bg-gray-900 text-white">
             {/* <h1 className="text-xl font-bold"><CalendarDays className="inline-block"/> Leave Tracker</h1> */}
                 
                 <Link 
