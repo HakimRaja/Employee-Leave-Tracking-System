@@ -6,8 +6,8 @@ function App() {
 
   return (
     <>
-      <div>
-      <h1>Employee Leave Tracking System</h1>
+      <div className='bg-gray-400'>
+      <h1 className='text-center'>Employee Leave Tracking System</h1>
       </div>
     </>
   )
