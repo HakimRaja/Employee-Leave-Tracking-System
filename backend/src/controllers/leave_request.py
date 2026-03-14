@@ -3,7 +3,7 @@ from src.models.employee import Employee
 from src.models.leave_request import LeaveRequest
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.schemas.leave_request import LeaveRequestBase
-from sqlmodel import select,func
+from sqlmodel import select,func,case
 from datetime import datetime,timedelta
 
 # Create a new leave request
@@ -78,7 +78,12 @@ async def list_leave_requests(type: str, session: AsyncSession):
                         LeaveRequest.start_date, LeaveRequest.end_date,
                         LeaveRequest.leave_type, LeaveRequest.notes,
                         LeaveRequest.status).join(Employee, LeaveRequest.employee_id == Employee.id).where(
-                            LeaveRequest.deleted_at.is_(None), Employee.deleted_at.is_(None)).order_by(LeaveRequest.created_at.desc())
+                            LeaveRequest.deleted_at.is_(None), Employee.deleted_at.is_(None)).order_by(
+                                case(
+                                    (LeaveRequest.status == "pending", 0),
+                                    else_=1
+                                ),
+                                LeaveRequest.start_date.asc())
         if type:
             query = query.where(LeaveRequest.status == type)
         result = await session.exec(query)
