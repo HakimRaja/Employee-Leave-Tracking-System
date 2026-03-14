@@ -4,7 +4,7 @@ from src.models.leave_request import LeaveRequest
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.schemas.leave_request import LeaveRequestBase
 from sqlmodel import select,func,case
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta,date
 
 # Create a new leave request
 async def create_leave_request(leave_data : LeaveRequestBase,session: AsyncSession):
@@ -91,3 +91,18 @@ async def list_leave_requests(type: str, session: AsyncSession):
         return {"leave_requests": leave_requests}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the leave requests.{e}")
+
+# List leave requests for calendar view   
+async def get_leave_requests_for_calendar(session: AsyncSession):
+    try:
+        query = select(LeaveRequest.id, LeaveRequest.employee_id, Employee.name, LeaveRequest.start_date, LeaveRequest.end_date,
+                        LeaveRequest.status).join(Employee, LeaveRequest.employee_id == Employee.id).where(
+                            LeaveRequest.deleted_at.is_(None), 
+                            Employee.deleted_at.is_(None), 
+                            LeaveRequest.status == "approved",
+                            LeaveRequest.end_date > date.today()).order_by(LeaveRequest.start_date.asc())
+        result = await session.exec(query)
+        leave_requests = result.mappings().all()
+        return {"leave_requests": leave_requests}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the leave requests for calendar.{e}")

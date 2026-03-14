@@ -3,7 +3,8 @@ from src.database.connection import get_db_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.schemas.leave_request import LeaveRequestBase
 from src.controllers.leave_request import (create_leave_request as create_leave_request_controller
-                                           ,list_leave_requests as list_leave_requests_controller)
+                                           ,list_leave_requests as list_leave_requests_controller,
+                                           get_leave_requests_for_calendar as get_leave_requests_for_calendar_controller)
 
 app = APIRouter(prefix="/leave-request", tags=["leave-request"])
 
@@ -23,3 +24,11 @@ async def list_leave_requests(type:  str = None, session: AsyncSession = Depends
         raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the leave requests.{e}")
+
+# Endpoint to get leave requests for calendar view (GET /leave-request/calendar) 
+@app.get("/calendar")
+async def get_leave_requests_for_calendar(session: AsyncSession = Depends(get_db_session)):
+    try:
+        return await get_leave_requests_for_calendar_controller(session)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the leave requests for calendar.{e}")

@@ -3,10 +3,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface LeaveEvent {
     id: number;
-    employeeName: string;
-    startDate: string; // YYYY-MM-DD
-    endDate: string;   // YYYY-MM-DD
-    colorClass: string; // Tailwind classes for the pill (e.g., 'bg-red-200 text-red-800')
+    name: string;
+    employee_id: string;
+    start_date: string; // YYYY-MM-DD
+    end_date: string;   // YYYY-MM-DD
+    status: string;
 }
 
 interface CalendarProps {
@@ -45,6 +46,10 @@ export default function Calendar({ leaves }: CalendarProps) {
         const today = new Date();
         return day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
     };
+    const avatarColors = [
+        "bg-blue-200", "bg-green-200", "bg-purple-200", 
+        "bg-yellow-200", "bg-pink-200", "bg-indigo-200", "bg-teal-200"
+    ];
 
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
@@ -84,7 +89,7 @@ export default function Calendar({ leaves }: CalendarProps) {
                     
                     // Find all leaves that overlap with this specific date
                     const dayLeaves = leaves.filter(leave => 
-                        dateStr >= leave.startDate && dateStr <= leave.endDate
+                        dateStr >= leave.start_date && dateStr <= leave.end_date
                     );
 
                     const todayStyling = isToday(day) 
@@ -102,10 +107,10 @@ export default function Calendar({ leaves }: CalendarProps) {
                                 {dayLeaves.slice(0, 2).map(leave => (
                                     <div 
                                         key={leave.id} 
-                                        className={`text-xs px-2 py-0.5 rounded-sm truncate ${leave.colorClass}`}
+                                        className={`text-xs px-2 py-0.5 rounded-sm truncate ${avatarColors[leave.name.charCodeAt(0) % avatarColors.length]}`}
                                     >
                                         {/* Just show the first name */}
-                                        {leave.employeeName.split(' ')[0]} 
+                                        {leave.name.split(' ')[0]} 
                                     </div>
                                 ))}
                                 

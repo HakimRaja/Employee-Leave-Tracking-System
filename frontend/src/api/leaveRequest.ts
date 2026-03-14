@@ -36,3 +36,14 @@ export const createLeaveRequest = async (data: {
     throw error?.response?.data?.detail || error;
   }
 };
+
+export const getLeaveRequestsForCalendar = async () => {
+  try {
+    const response = await api.get("/leave-request/calendar");
+    return response.data;
+  }
+  catch (error : any) { 
+    console.error("Error fetching leave requests for calendar:", error);
+    throw error?.response?.data?.detail || error?.response?.data?.detail?.msg || error;
+    }   
+};
