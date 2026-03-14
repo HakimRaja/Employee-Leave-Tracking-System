@@ -4,6 +4,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from src.schemas.employee import EmployeeBase
 from src.controllers.employee import (create_employee as create_employee_controller,
                                       list_employees as list_employees_controller,
+                                      get_all_employee_details as get_all_employee_details_controller,
                                       get_employee as get_employee_controller,
                                       delete_employee as delete_employee_controller)
 
@@ -21,6 +22,11 @@ async def create_employee(data : EmployeeBase, session: AsyncSession = Depends(g
 async def list_employees(session: AsyncSession = Depends(get_db_session)):
     """List all employees."""
     return await list_employees_controller(session)
+
+@router.get("/details-all")
+async def get_all_employee_details(session: AsyncSession = Depends(get_db_session)):
+    """Get details of all employees."""
+    return await get_all_employee_details_controller(session)
 
 # Endpoint to get employee details by ID (GET /employee/{employee_id})
 @router.get("/{employee_id}")

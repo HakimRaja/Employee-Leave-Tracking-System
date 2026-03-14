@@ -1,8 +1,9 @@
 from fastapi import status,HTTPException
 from src.models.employee import Employee
+from src.models.leave_request import LeaveRequest
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.schemas.employee import EmployeeBase
-from sqlmodel import select
+from sqlmodel import select,func
 from datetime import datetime
 from uuid import UUID
 
@@ -34,7 +35,24 @@ async def list_employees(session: AsyncSession):
         return {"employees": employees}
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the employee list.{e}")
-    
+
+async def get_all_employee_details(session: AsyncSession):
+    try:
+        result = await session.exec(select(Employee.id,Employee.name,Employee.email,Employee.department,
+                                           Employee.annual_leave_balance.label("total_days"),
+                                           (
+                                                func.sum(LeaveRequest.end_date - LeaveRequest.start_date) + func.count(LeaveRequest.id)
+                                            ).label("availed_leaves")).join(LeaveRequest, Employee.id == LeaveRequest.employee_id).where(
+                                               LeaveRequest.status == "approved",Employee.deleted_at.is_(None),
+                                               LeaveRequest.deleted_at.is_(None)).order_by(
+                                                   Employee.created_at.desc()).group_by(Employee.id))
+        
+        employees = result.mappings().all()
+        return {"employees_details": employees}
+    except Exception as e:
+        print(f"Error fetching employee details: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the employee details.")
+
 async def get_employee(employee_id: UUID, session: AsyncSession):
     try:
         result = await session.exec(select(Employee).where(Employee.id == employee_id,Employee.deleted_at.is_(None)))

@@ -11,7 +11,7 @@ class Employee(SQLModel, table=True):
     name : str = Field(..., index=True)
     email : EmailStr = Field(..., unique=False, index=True)
     department : str = Field(..., index=True)
-    annual_leave_balance : int = Field(default=20)
+    annual_leave_balance : int = Field(default=20) # Default annual leave balance for new employees (it will not be changed)
 
     created_at : datetime = Field(default_factory=datetime.utcnow)
     updated_at : datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow},nullable=False)
