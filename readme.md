@@ -213,7 +213,7 @@ src/
  ├── modals/        → modal forms
  └── ui/            → reusable UI elements
 ```
-
+> **Note:** An `interfaces` directory is included to centralize TypeScript types across the application. Due to time constraints for the assignment, some interfaces are currently defined directly within their respective TSX files. In a production setup, these would be fully extracted and reused through the shared interfaces folder.
 ---
 
 ## Key Features
