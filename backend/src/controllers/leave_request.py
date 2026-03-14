@@ -78,7 +78,7 @@ async def list_leave_requests(type: str, session: AsyncSession):
                         LeaveRequest.start_date, LeaveRequest.end_date,
                         LeaveRequest.leave_type, LeaveRequest.notes,
                         LeaveRequest.status).join(Employee, LeaveRequest.employee_id == Employee.id).where(
-                            LeaveRequest.deleted_at.is_(None), Employee.deleted_at.is_(None))
+                            LeaveRequest.deleted_at.is_(None), Employee.deleted_at.is_(None)).order_by(LeaveRequest.created_at.desc())
         if type:
             query = query.where(LeaveRequest.status == type)
         result = await session.exec(query)

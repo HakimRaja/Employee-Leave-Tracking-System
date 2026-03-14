@@ -12,7 +12,7 @@ app = APIRouter(prefix="/leave-request", tags=["leave-request"])
 async def create_leave_request(leave_data : LeaveRequestBase,session: AsyncSession = Depends(get_db_session)):
     return await create_leave_request_controller(leave_data, session)
 
-# Endpoint to list all leave requests (GET /leave-request)
+# Endpoint to list all leave requests (GET /leave-request?type=[optional])
 @app.get("")
 async def list_leave_requests(type:  str = None, session: AsyncSession = Depends(get_db_session)):
     try:

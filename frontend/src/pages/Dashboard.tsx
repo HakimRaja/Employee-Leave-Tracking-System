@@ -89,7 +89,7 @@ export default function Dashboard() {
                     <h2 className="text-xl font-bold text-gray-900 mb-5">Pending Requests</h2>
 
                     <div className="space-y-3">
-                        {requestsList.map((req: any, index: number) => {
+                        {requestsList.map((req: any) => {
                             // Calculate values directly inside the map loop
                             const initial = req.name ? req.name[0].toUpperCase() : "?";
                             const dateRange = `${formatDate(req.start_date)} – ${formatDate(req.end_date)}`;

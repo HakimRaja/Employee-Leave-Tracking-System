@@ -6,9 +6,18 @@ import DateSelector from "../ui/DateSelector";
 interface SubmitRequestProps {
     isOpen: boolean;
     onClose: () => void;
+    addLeaveRequest: (data: any) => Promise<any>;
+    employees: {
+        id: string;
+        name: string;
+        email: string;
+    }[];
 }
 
-export default function SubmitRequest({ isOpen, onClose }: SubmitRequestProps) {
+export default function SubmitRequest({ isOpen, onClose, addLeaveRequest,employees }: SubmitRequestProps) {
+    const [employeeId, setEmployeeId] = useState("");
+    const [leaveType, setLeaveType] = useState("");
+    const [notes, setNotes] = useState("");
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
@@ -44,6 +53,23 @@ export default function SubmitRequest({ isOpen, onClose }: SubmitRequestProps) {
             setEndDate("");
         }
     };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try {
+            await addLeaveRequest({
+            employee_id: employeeId,
+            start_date: startDate,
+            end_date: endDate,
+            leave_type: leaveType,
+            notes
+            });
+
+            onClose();
+        } catch (error) {
+            console.error(error);
+        }
+};
 
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 transition-opacity duration-300">
@@ -55,15 +81,19 @@ export default function SubmitRequest({ isOpen, onClose }: SubmitRequestProps) {
 
                 <h2 className="text-xl font-bold text-gray-900 mb-6">Submit Leave Request</h2>
 
-                <form className="space-y-5">
+                <form className="space-y-5" onSubmit={handleSubmit}>
                     {/* Employee Select */}
                     <div className="flex flex-col gap-1.5">
                         <label className="text-sm font-medium text-gray-800">Employee</label>
                         <div className="relative">
-                            <select defaultValue="" className="w-full border border-blue-600 rounded-lg px-3 py-2.5 outline-none appearance-none focus:ring-1 focus:ring-blue-600 text-gray-700 bg-white">
+                            <select 
+                                value={employeeId}
+                                onChange={(e) => setEmployeeId(e.target.value)}
+                                className="w-full border border-blue-600 rounded-lg px-3 py-2.5 outline-none appearance-none focus:ring-1 focus:ring-blue-600 text-gray-700 bg-white">
                                 <option value="" disabled>Select employee</option>
-                                <option value="bob">Bob Smith</option>
-                                <option value="carol">Carol Williams</option>
+                                {employees.map(emp => (
+                                    <option key={emp.id} value={emp.id}>{emp.name}-{emp.email}</option>
+                                ))}
                             </select>
                             <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-gray-500">
                                 <ChevronDown size={18} />
@@ -95,7 +125,10 @@ export default function SubmitRequest({ isOpen, onClose }: SubmitRequestProps) {
                     <div className="flex flex-col gap-1.5">
                         <label className="text-sm font-medium text-gray-800">Leave Type</label>
                         <div className="relative">
-                            <select defaultValue="" className="w-full border border-gray-300 rounded-lg px-3 py-2.5 outline-none appearance-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700 bg-white">
+                            <select 
+                            value={leaveType}
+                            onChange={(e) => setLeaveType(e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2.5 outline-none appearance-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700 bg-white">
                                 <option value="" disabled className="text-gray-400">Select type</option>
                                 <option value="sick">Sick Leave</option>
                                 <option value="annual">Annual Leave</option>
@@ -111,6 +144,8 @@ export default function SubmitRequest({ isOpen, onClose }: SubmitRequestProps) {
                     <div className="flex flex-col gap-1.5">
                         <label className="text-sm font-medium text-gray-800">Notes (optional)</label>
                         <textarea 
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
                             rows={3}
                             placeholder="Any additional details..."
                             className="w-full border border-gray-300 rounded-lg px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none placeholder:text-gray-400"
