@@ -72,14 +72,16 @@ async def create_leave_request(leave_data : LeaveRequestBase,session: AsyncSessi
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while creating the leave request.{e}")
 
 # List leave requests with employee details
-async def list_leave_requests(session: AsyncSession):
+async def list_leave_requests(type: str, session: AsyncSession):
     try:
-        result = await session.exec(select(LeaveRequest.id,LeaveRequest.employee_id,Employee.name,Employee.email,Employee.department,Employee.annual_leave_balance,
-                                           LeaveRequest.start_date,LeaveRequest.end_date,
-                                           LeaveRequest.leave_type,LeaveRequest.notes,
-                                           LeaveRequest.status).join(Employee, LeaveRequest.employee_id == Employee.id)
-                                           .where(LeaveRequest.deleted_at.is_(None), Employee.deleted_at.is_(None))
-                                           ).order_by(LeaveRequest.created_at.desc())
+        query = select(LeaveRequest.id, LeaveRequest.employee_id, Employee.name, Employee.email, Employee.department, Employee.annual_leave_balance,
+                        LeaveRequest.start_date, LeaveRequest.end_date,
+                        LeaveRequest.leave_type, LeaveRequest.notes,
+                        LeaveRequest.status).join(Employee, LeaveRequest.employee_id == Employee.id).where(
+                            LeaveRequest.deleted_at.is_(None), Employee.deleted_at.is_(None))
+        if type:
+            query = query.where(LeaveRequest.status == type)
+        result = await session.exec(query)
         leave_requests = result.mappings().all()
         return {"leave_requests": leave_requests}
     except Exception as e:

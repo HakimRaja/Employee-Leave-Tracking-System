@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends,HTTPException, status
 from src.database.connection import get_db_session
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.schemas.leave_request import LeaveRequestBase
@@ -14,5 +14,12 @@ async def create_leave_request(leave_data : LeaveRequestBase,session: AsyncSessi
 
 # Endpoint to list all leave requests (GET /leave-request)
 @app.get("")
-async def list_leave_requests(session: AsyncSession = Depends(get_db_session)):
-    return await list_leave_requests_controller(session)
+async def list_leave_requests(type:  str = None, session: AsyncSession = Depends(get_db_session)):
+    try:
+        if type and type not in ["pending", "approved", "rejected"]:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid type filter. Allowed values are 'pending', 'approved', 'rejected'.")
+        return await list_leave_requests_controller(type, session)
+    except HTTPException as e:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the leave requests.{e}")
