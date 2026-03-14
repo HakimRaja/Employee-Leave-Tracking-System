@@ -42,8 +42,8 @@ async def get_all_employee_details(session: AsyncSession):
                                            Employee.annual_leave_balance.label("total_days"),
                                            (
                                                 func.sum(LeaveRequest.end_date - LeaveRequest.start_date) + func.count(LeaveRequest.id)
-                                            ).label("availed_leaves")).join(LeaveRequest, Employee.id == LeaveRequest.employee_id).where(
-                                               LeaveRequest.status == "approved",Employee.deleted_at.is_(None),
+                                            ).label("availed_leaves")).outerjoin(LeaveRequest, (Employee.id == LeaveRequest.employee_id and LeaveRequest.status == "approved")).where(
+                                               Employee.deleted_at.is_(None),
                                                LeaveRequest.deleted_at.is_(None)).order_by(
                                                    Employee.created_at.desc()).group_by(Employee.id))
         
