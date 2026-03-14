@@ -1,5 +1,5 @@
 import { BrowserRouter,Routes,Route } from 'react-router-dom'
-import { useState } from 'react'
+// import { useState } from 'react'
 import './App.css'
 import Sidebar from './components/Sidebar'
 import Dashboard from './pages/Dashboard'
@@ -7,11 +7,14 @@ import Employees from './pages/Employees'
 import Requests from './pages/Requests'
 import Calendar from './pages/Calendar'
 import { NotFound } from './pages/NotFound'
+import { Toaster } from 'sonner'
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
 
   return (
+    <>
+    <Toaster position="top-right" richColors />
     <BrowserRouter>
     <div className='flex'>
       <Sidebar />
@@ -26,6 +29,7 @@ function App() {
       </div>
     </div>
     </BrowserRouter>
+    </>
   )
 }
 
