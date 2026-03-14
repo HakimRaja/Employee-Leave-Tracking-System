@@ -3,7 +3,7 @@ from src.models.employee import Employee
 from src.models.leave_request import LeaveRequest
 from sqlmodel.ext.asyncio.session import AsyncSession
 from src.schemas.employee import EmployeeBase
-from sqlmodel import select,func
+from sqlmodel import and_, select,func
 from datetime import datetime
 from uuid import UUID
 
@@ -27,24 +27,26 @@ async def create_employee(data : EmployeeBase, session: AsyncSession):
 async def list_employees(session: AsyncSession):
     try:
         result = await session.exec(select(Employee.id,Employee.name,Employee.email
-                                           ).where(Employee.deleted_at.is_(None))
-                                           ).order_by(Employee.created_at.desc())
+                                           ).where(Employee.deleted_at.is_(None)).order_by(Employee.created_at.desc()
+                                           ))
         
         employees = result.mappings().all()
         # print(f"Retrieved ({employees} )employees from the database.")
         return {"employees": employees}
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the employee list.{e}")
+        print(f"Error fetching employee list: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Something went wrong while fetching the employee list.")
 
 async def get_all_employee_details(session: AsyncSession):
     try:
         result = await session.exec(select(Employee.id,Employee.name,Employee.email,Employee.department,
                                            Employee.annual_leave_balance.label("total_days"),
-                                           (
-                                                func.sum(LeaveRequest.end_date - LeaveRequest.start_date) + func.count(LeaveRequest.id)
-                                            ).label("availed_leaves")).outerjoin(LeaveRequest, (Employee.id == LeaveRequest.employee_id and LeaveRequest.status == "approved")).where(
-                                               Employee.deleted_at.is_(None),
-                                               LeaveRequest.deleted_at.is_(None)).order_by(
+                                           (func.sum(LeaveRequest.end_date - LeaveRequest.start_date) + func.count(LeaveRequest.id)
+                                            ).label("availed_leaves")).outerjoin(LeaveRequest, 
+                                                                                 and_(Employee.id == LeaveRequest.employee_id,
+                                                                                    LeaveRequest.status == "approved",
+                                                                                    LeaveRequest.deleted_at.is_(None)
+                                            )).where(Employee.deleted_at.is_(None)).order_by(
                                                    Employee.created_at.desc()).group_by(Employee.id))
         
         employees = result.mappings().all()
