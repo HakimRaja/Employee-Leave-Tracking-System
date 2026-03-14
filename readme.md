@@ -181,6 +181,7 @@ The app will run at: **http://localhost:5173**
 - TypeScript
 - Vite
 - React Router
+- Tailwind CSS (for styling)
 - Sonner (toast notifications)
 - Lucide React (icons)
 
@@ -243,6 +244,9 @@ Managers can:
 
 ### Calendar View
 Displays upcoming employee leave in a visual format.
+
+### Responsive UI built with Tailwind CSS
+The UI is styled using Tailwind CSS and designed to be responsive across different screen sizes.
 
 ---
 
